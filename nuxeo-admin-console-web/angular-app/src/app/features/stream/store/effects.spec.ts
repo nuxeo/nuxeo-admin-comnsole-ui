@@ -21,6 +21,7 @@ describe("StreamEffects", () => {
       "getStreams",
       "getConsumers",
       "startSSEStream",
+      "stopSSEStream",
     ]);
 
     TestBed.configureTestingModule({

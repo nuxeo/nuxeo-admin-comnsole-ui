@@ -32,9 +32,21 @@
             </mat-radio-group>
         </div>
         <br>
-        <button mat-flat-button color="primary" type="submit" class="stream-form-container__button"
-            [disabled]="isSubmitBtnDisabled">
-            {{ STREAM_LABELS.VIEW_RECORDS }}
-        </button>
+        <br>
+        <div class="stream-form-container--actions">
+            <button mat-flat-button color="primary" type="submit" class="stream-form-container__button"
+                [disabled]="isSubmitBtnDisabled">
+                {{ STREAM_LABELS.VIEW_RECORDS }}
+            </button>
+            <button mat-flat-button color="primary" type="button" class="stream-form-container__button"
+                [disabled]="isStopFetchBtnDisabled" (click)="onStopFetch()">
+                {{ STREAM_LABELS.STOP_FETCH }}
+            </button>
+            <button mat-flat-button color="primary" type="button" class="stream-form-container__button"
+                [disabled]="isClearBtnDisabled" (click)="onClearRecords()">
+                {{ STREAM_LABELS.CLEAR_RECORDS }}
+            </button>
+        </div>
+
     </form>
 </div>

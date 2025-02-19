@@ -3,9 +3,7 @@
     font-size: 16px;
     font-weight: 400;
     font-family: 'Open Sans', sans-serif;
-    &__summary {
-        font-weight: 550;
-    }
+
     &__data {
         width: 80%;
         word-wrap: break-word;
@@ -23,7 +21,7 @@ mat-card {
         border: 1px solid #d1d5db;
         box-shadow: none;
         min-height: 350px;
-      }
+    }
 }
 
 @media (max-width: 1024px) {
@@ -33,6 +31,6 @@ mat-card {
             height: auto;
             word-wrap: break-word;
             white-space: normal;
-        } 
+        }
     }
 }

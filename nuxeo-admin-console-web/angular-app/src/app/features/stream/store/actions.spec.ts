@@ -1,5 +1,5 @@
 import { Stream } from '../stream.interface';
-import * as StreamActions from './actions'
+import * as StreamActions from './actions';
 import { HttpErrorResponse } from '@angular/common/http';
 
 describe('Stream Actions', () => {
@@ -12,11 +12,11 @@ describe('Stream Actions', () => {
 
   describe('onFetchStreamsLaunch', () => {
     it('should create an onFetchStreamsLaunch action with streamsData', () => {
-        const streamsData: Stream[] = [
-            { name: 'stream1', partitions: 0 },
-            { name: 'stream2', partitions: 1 }
-          ];
-          
+      const streamsData: Stream[] = [
+        { name: 'stream1', partitions: 0 },
+        { name: 'stream2', partitions: 1 },
+      ];
+
       const action = StreamActions.onFetchStreamsLaunch({ streamsData });
       expect(action.type).toEqual('[Admin] On Fetch Streams Launch');
       expect(action.streamsData).toEqual(streamsData);
@@ -52,7 +52,7 @@ describe('Stream Actions', () => {
     it('should create an onFetchConsumersLaunch action with consumersData', () => {
       const consumersData = [
         { stream: 'stream1', consumer: 'consumer1' },
-        { stream: 'stream2', consumer: 'consumer2' }
+        { stream: 'stream2', consumer: 'consumer2' },
       ];
       const action = StreamActions.onFetchConsumersLaunch({ consumersData });
       expect(action.type).toEqual('[Admin] On Fetch Consumers Launch');
@@ -107,6 +107,36 @@ describe('Stream Actions', () => {
     it('should create a resetFetchRecordsState action', () => {
       const action = StreamActions.resetFetchRecordsState();
       expect(action.type).toEqual('[Admin] Reset Fetch Records State');
+    });
+  });
+
+  describe('onStopFetch', () => {
+    it('should create an onStopFetch action', () => {
+      const action = StreamActions.onStopFetch();
+      expect(action.type).toEqual('[Admin] Stop Fetching Records');
+    });
+  });
+
+  describe('onStopFetchLaunch', () => {
+    it('should create an onStopFetchLaunch action', () => {
+      const action = StreamActions.onStopFetchLaunch();
+      expect(action.type).toEqual('[Admin] On Stop Fetch Launch');
+    });
+  });
+
+  describe('onStopFetchFailure', () => {
+    it('should create an onStopFetchFailure action with error', () => {
+      const error = { message: 'error' };
+      const action = StreamActions.onStopFetchFailure({ error });
+      expect(action.type).toEqual('[Admin] On Stop Fetch Failure');
+      expect(action.error).toEqual(error);
+    });
+  });
+
+  describe('resetStopFetchState', () => {
+    it('should create a resetStopFetchState action', () => {
+      const action = StreamActions.resetStopFetchState();
+      expect(action.type).toEqual('[Admin] Reset Stop Fetch State');
     });
   });
 });

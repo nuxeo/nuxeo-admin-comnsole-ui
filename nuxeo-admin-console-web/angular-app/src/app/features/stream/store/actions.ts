@@ -44,3 +44,16 @@ export const onFetchRecordsFailure = createAction(
 export const resetFetchRecordsState = createAction(
   "[Admin] Reset Fetch Records State"
 );
+export const onStopFetch = createAction(
+  '[Admin] Stop Fetching Records'
+);
+export const onStopFetchLaunch = createAction(
+  "[Admin] On Stop Fetch Launch"
+);
+export const onStopFetchFailure = createAction(
+  "[Admin] On Stop Fetch Failure",
+  props<{ error: unknown }>()
+);
+export const resetStopFetchState = createAction(
+  "[Admin] Reset Stop Fetch State"
+);

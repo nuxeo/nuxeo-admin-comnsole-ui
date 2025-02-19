@@ -122,7 +122,6 @@ describe('StreamService', () => {
             expect(receivedData).toEqual(mockData);
         }));
 
-
         it('should handle onerror event correctly', fakeAsync(() => {
             const mockEventSource = {
                 onmessage: jasmine.createSpy('onmessage'),
@@ -144,6 +143,22 @@ describe('StreamService', () => {
             mockEventSource.onerror(mockError);
             tick();
         }));
+
+        it('should close the stream on stopSSEStream call', fakeAsync(() => {
+            const mockEventSource = {
+                close: jasmine.createSpy('close'),
+            };
+            spyOn(window, 'EventSource').and.returnValue(mockEventSource as unknown as EventSource);
+            const params = { streamId: '12345' };
+            const stopStreamSpy = spyOn(service, 'stopSSEStream').and.callThrough();
+
+            service.startSSEStream(params).subscribe();
+            service.stopSSEStream();
+            tick();
+
+            expect(mockEventSource.close).toHaveBeenCalled();
+            expect(stopStreamSpy).toHaveBeenCalled();
+        }));
     });
 
     describe('appendParamsToUrl', () => {
@@ -152,6 +167,20 @@ describe('StreamService', () => {
             const params = { param1: 'value1', param2: 'value2' };
             const urlWithParams = service['appendParamsToUrl'](baseUrl, params);
             expect(urlWithParams).toBe('http://abc.com?param1=value1&param2=value2');
+        });
+
+        it('should handle empty parameters correctly', () => {
+            const baseUrl = 'http://abc.com';
+            const params = {};
+            const urlWithParams = service['appendParamsToUrl'](baseUrl, params);
+            expect(urlWithParams).toBe('http://abc.com?');
+        });
+
+        it('should encode special characters in parameters', () => {
+            const baseUrl = 'http://abc.com';
+            const params = { 'param@1': 'value/1', 'param&2': 'value#2' };
+            const urlWithParams = service['appendParamsToUrl'](baseUrl, params);
+            expect(urlWithParams).toBe('http://abc.com?param%401=value%2F1&param%262=value%232');
         });
     });
 });

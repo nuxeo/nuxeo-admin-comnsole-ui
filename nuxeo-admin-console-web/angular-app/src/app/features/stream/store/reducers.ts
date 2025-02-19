@@ -7,6 +7,8 @@ export interface StreamsState {
   streams: Stream[];
   consumers: { stream: string; consumer: string }[];
   records: { type?: string }[];
+  isFetchStopped: boolean;
+  isFetchStoppedError: unknown | null;
   streamsError: HttpErrorResponse | null;
   consumersError: HttpErrorResponse | null;
   recordsError: HttpErrorResponse | null;
@@ -16,6 +18,8 @@ export const initialStreamsState: StreamsState = {
   streams: [],
   consumers: [],
   records: [],
+  isFetchStopped: false,
+  isFetchStoppedError: null,
   streamsError: null,
   consumersError: null,
   recordsError: null,
@@ -69,7 +73,7 @@ export const streamsReducer = createReducer(
   })),
   on(StreamActions.onFetchRecordsLaunch, (state, { recordsData }) => ({
     ...state,
-    records: Array.isArray(recordsData) ? recordsData : [recordsData], // Replaces instead of appending
+    records: Array.isArray(recordsData) ? recordsData : [recordsData],
   })),
   on(StreamActions.onFetchRecordsFailure, (state, { error }) => ({
     ...state,
@@ -79,5 +83,20 @@ export const streamsReducer = createReducer(
     ...state,
     records: initialStreamsState.records,
     recordsError: null,
-  }))
+  })),
+
+  // Stop SSE Fetching
+  on(StreamActions.onStopFetchLaunch, (state) => ({
+    ...state,
+    isFetchStopped: true,
+  })),
+  on(StreamActions.onStopFetchFailure, (state) => ({
+    ...state,
+    isFetchStoppedError: false,
+  })),
+  on(StreamActions.resetStopFetchState, (state) => ({
+    ...state,
+    isFetchStopped: false,
+    isFetchStoppedError: null
+  })),
 );

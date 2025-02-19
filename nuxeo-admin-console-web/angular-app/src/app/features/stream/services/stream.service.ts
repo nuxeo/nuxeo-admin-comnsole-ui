@@ -1,7 +1,7 @@
 import { REST_END_POINTS } from "./../../../shared/constants/rest-end-ponts.constants";
 import { Injectable } from "@angular/core";
 import { NetworkService } from "../../../shared/services/network.service";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, of } from "rxjs";
 import { Stream } from "../stream.interface";
 
 @Injectable({
@@ -9,6 +9,12 @@ import { Stream } from "../stream.interface";
 })
 export class StreamService {
   isFetchingRecords: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  isClearRecordsDisabled: BehaviorSubject<boolean> = new BehaviorSubject(true);
+  isStopFetchDisabled: BehaviorSubject<boolean> = new BehaviorSubject(true);
+  isViewRecordsDisabled: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  clearRecordsDisplay: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  private eventSource?: EventSource;
+
   constructor(private networkService: NetworkService) { }
   getStreams(): Observable<Stream[]> {
     return this.networkService.makeHttpRequest<Stream[]>(
@@ -32,22 +38,31 @@ export class StreamService {
   }
 
   startSSEStream(params: Record<string, unknown>) {
-    const url = this.networkService.getAPIEndpoint(
-      REST_END_POINTS.STREAM_RECORDS
-    );
+    const url = this.networkService.getAPIEndpoint(REST_END_POINTS.STREAM_RECORDS);
     const fullUrl = this.appendParamsToUrl(url, params);
+
     return new Observable((observer) => {
-      const eventSource = new EventSource(fullUrl, { withCredentials: true });
-      eventSource.onmessage = (event) => {
+      this.eventSource = new EventSource(fullUrl, { withCredentials: true });
+
+      this.eventSource.onmessage = (event) => {
         observer.next(event.data);
       };
-      eventSource.onerror = (error) => {
+
+      this.eventSource.onerror = (error) => {
         observer.error(error);
       };
+
       return () => {
-        eventSource.close();
+        this.eventSource?.close(); 
+        this.eventSource = undefined;
       };
     });
+  }
+
+  stopSSEStream(): Observable<void> {
+    this.eventSource?.close(); 
+    this.eventSource = undefined;
+    return of(void 0);
   }
 
   private appendParamsToUrl(url: string, params: Record<string, unknown>) {
@@ -61,6 +76,6 @@ export class StreamService {
         acc[key] = String(value);
       }
       return acc;
-    }, {} as Record<string, string>)
+    }, {} as Record<string, string>);
   }
 }

@@ -1,12 +1,4 @@
 <div class="stream-records">
-  <div class="stream-records__summary">
-    <ng-container *ngIf="isFetchingRecords; else recordsFetched">
-      {{STREAM_LABELS.FETCHING_RECORDS}}
-    </ng-container>
-    <ng-template #recordsFetched>
-      <p>{{insertCount(STREAM_LABELS.FETCHED_RECORDS_COUNT)}}</p>
-    </ng-template>
-  </div>
   <mat-card class="stream-records__data" role="region" tabindex="0" aria-label="records data">
     <mat-card-content>
       <div *ngFor="let record of records">
